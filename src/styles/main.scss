@@ -1,0 +1,23 @@
+@import "normalize/import-now";
+@import "fonts";
+@import "variables";
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+body {
+    color: $font-color;
+    font-family: sans-serif;
+    background-color: #f4f6f9;
+}
+p {
+    margin: 0 0 15px;
+    color: $font-color;
+    font-size: 12px;
+    line-height: 140%;
+}
+input {
+    outline: none;
+}
