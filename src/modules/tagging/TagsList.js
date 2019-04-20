@@ -71,7 +71,7 @@ export default ({tags, removeTag}) => {
                 return (
                     <ListItem key={index.toString()}>
                         {tag.name}
-                        {printCounter(tag.selections.length)}
+                        {printCounter(tag.texts.length)}
                         <ButtonContainer>
                             <Button type="button" size="small" onClick={(e) => removeTag(index, e)}>Remove {tag.name}</Button>
                         </ButtonContainer>

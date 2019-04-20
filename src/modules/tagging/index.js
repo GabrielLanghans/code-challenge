@@ -4,7 +4,7 @@ import DefaultBox from '../../ui-components/DefaultBox';
 import Text from './Text';
 import AddTag from './AddTag';
 import TagsList from './TagsList';
-
+import tagsState from './tagsState';
 
 const TaggingContainer = styled.div`
     display: flex;
@@ -31,14 +31,18 @@ const TagsCol = styled.div`
 
 export default (props) => {
 
-	const tags = [];
+    const { tags, addTag, removeTag } = tagsState([]);
+
 
     const handleAddTag = (tagName, e) => {
-        console.log('tagName', tagName);
+		console.log('adding rag');
+       addTag(tagName);
     }
 
     const handleRemoveTag = (index, e) => {
-        console.log('removeTag', index);
+        if(parseInt(index, 10) >= 0) {
+            removeTag(index);
+        }
     }
 
     return(

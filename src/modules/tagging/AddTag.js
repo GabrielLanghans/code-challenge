@@ -20,10 +20,7 @@ export default ({addTag}) => {
 
     const handleChangeTagName = (e) => {
         setTagName(e.target.value);
-    }
-    // const handleAddTag = (e) => {
-    //     console.log('add', tagName);
-    // }
+    }    
 
     return(
         <Container>
