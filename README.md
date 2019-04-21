@@ -6,6 +6,9 @@ Latest stable version of node and npm (https://nodejs.org/en/)
 ## To Install
 `npm i`
 
+## To run tests
+`npm run test`
+
 ## To run in development
 `npm start`
 
