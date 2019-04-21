@@ -5,12 +5,13 @@ import Text from './Text';
 import AddTag from './AddTag';
 import TagsList from './TagsList';
 import tagsState from './tagsState';
+import {tabletLandscapeDown} from '../../MediaBreakpoints';
 
 const TaggingContainer = styled.div`
     display: flex;
     justify-content: space-between;
     height: 100%;
-    @media (max-width: 899px) {
+    @media (${tabletLandscapeDown}) {
         flex-wrap: wrap-reverse;
     }
 `;
@@ -18,7 +19,7 @@ const TaggingContainer = styled.div`
 const TextCol = styled.div`
     flex-basis: calc(70% - 15px);
     height: 100%;
-    @media (max-width: 899px) {
+    @media (${tabletLandscapeDown}) {
         flex-basis: 100%;
     }
 `;
@@ -26,7 +27,7 @@ const TextCol = styled.div`
 const TagsCol = styled.div`
     flex-basis: 30%;
     height: 100%;
-    @media (max-width: 899px) {
+    @media (${tabletLandscapeDown}) {
         flex-basis: 100%;
         margin-bottom: 15px;
     }

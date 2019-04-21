@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Button from '../../ui-components/forms/Button';
 import List from '../../ui-components/List';
 import ListItem from '../../ui-components/ListItem';
+import {tabletLandscapeDown} from '../../MediaBreakpoints';
 
 const ButtonContainer = styled.div`
     display: inline;
@@ -11,7 +12,7 @@ const ButtonContainer = styled.div`
     margin-left: 15px;
     transition: opacity 0.3s ease-in-out;
 
-    @media (max-width: 899px) {
+    @media (${tabletLandscapeDown}) {
         opacity: 1;
         pointer-events: auto;
     }
