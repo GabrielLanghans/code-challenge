@@ -18,11 +18,15 @@ export default ({addTag}) => {
     const handleChangeTagName = (e) => {
         setTagName(e.target.value);
     }
+    const handleAddTag = (tagName, e) => {
+        addTag(tagName, e);
+        setTagName('');
+    }
 
     return(
         <Container>
             <TextField id="tag-field" value={tagName} type="text" placeholder="Add tag" maxLength="30" inline onChange={handleChangeTagName} />
-            <Button type="button" onClick={(e) => addTag(tagName, e)}>+</Button>
+            <Button type="button" onClick={(e) => handleAddTag(tagName, e)}>+</Button>
         </Container>
     )
 }
