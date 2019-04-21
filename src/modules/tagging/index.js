@@ -43,6 +43,11 @@ const SEOTitle = styled.h1`
     height: 0;
 `;
 
+const DefaultBoxScroll = styled(DefaultBox)`
+  height: 100%;
+  overflow: auto;
+`;
+
 export default (props) => {
 
     const {tags, addTag, removeTag, addText, removeText} = tagsState([]);
@@ -71,10 +76,10 @@ export default (props) => {
                 </DefaultBox>
             </TextCol>
             <TagsCol>
-                <DefaultBox>
+                <DefaultBoxScroll>
                     <AddTag id="add-tag" addTag={handleAddTag} />
                     <TagsList tags={tags} removeTag={handleRemoveTag} addText={addText} selectedRange={selectedRange} selectedText={selectedText} emptySelection={() => handleSelectText(null, '')} />
-                </DefaultBox>
+                </DefaultBoxScroll>
             </TagsCol>
         </TaggingContainer>
     )
