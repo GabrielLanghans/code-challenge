@@ -3,5 +3,8 @@
         "env",
         "react"
     ],
-    "plugins": ["syntax-object-rest-spread"],    
+    "plugins": [
+        "syntax-object-rest-spread",
+        "transform-object-rest-spread"
+    ]
 }

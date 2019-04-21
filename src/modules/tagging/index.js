@@ -9,6 +9,7 @@ import tagsState from './tagsState';
 const TaggingContainer = styled.div`
     display: flex;
     justify-content: space-between;
+    height: 100%;
     @media (max-width: 899px) {
         flex-wrap: wrap-reverse;
     }
@@ -16,6 +17,7 @@ const TaggingContainer = styled.div`
 
 const TextCol = styled.div`
     flex-basis: calc(70% - 15px);
+    height: 100%;
     @media (max-width: 899px) {
         flex-basis: 100%;
     }
@@ -23,6 +25,7 @@ const TextCol = styled.div`
 
 const TagsCol = styled.div`
     flex-basis: 30%;
+    height: 100%;
     @media (max-width: 899px) {
         flex-basis: 100%;
         margin-bottom: 15px;
@@ -63,19 +66,13 @@ export default (props) => {
             <SEOTitle>Code Challenge</SEOTitle>
             <TextCol>
                 <DefaultBox>
-                    <Text tags={tags} selectText={(range, text) => handleSelectText(range, text)} />
+                    <Text tags={tags} removeText={removeText} selectText={(range, text) => handleSelectText(range, text)} />
                 </DefaultBox>
             </TextCol>
             <TagsCol>
                 <DefaultBox>
                     <AddTag id="add-tag" addTag={handleAddTag} />
                     <TagsList tags={tags} removeTag={handleRemoveTag} addText={addText} selectedRange={selectedRange} selectedText={selectedText} emptySelection={() => handleSelectText(null, '')} />
-
-                    {
-                        //<button id="add-button" type="button" onClick={()=>addText(0, 'first text')}>add text to first tag</button>
-                        //<button type="button" onClick={()=>removeText(0, 1)}>remove second text from the first tag</button>
-                    }
-
                 </DefaultBox>
             </TagsCol>
         </TaggingContainer>

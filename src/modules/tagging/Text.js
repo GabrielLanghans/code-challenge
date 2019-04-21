@@ -3,27 +3,30 @@ import Modal from '../../ui-components/Modal';
 import List from '../../ui-components/List';
 import ListItem from '../../ui-components/ListItem';
 import Title from '../../ui-components/Title';
+import styled from 'styled-components';
 import {removeParentTagFromText, highlightRange, getSafeRanges} from '../../Utility';
 
+const TextContainer = styled.div`
+    padding-right: 10px;
+    height: 100%;
+    overflow: auto;
+`;
 
-export default ({tags, selectText}) => {
+export default ({tags, selectText, removeText}) => {
 
     const [showModal, setShowModal] = useState(false);
-
 
     const textElement = useRef(null);
 
     const onSelection = e => {
+
         const sel = window.getSelection();
-        if(sel && sel.toString().length > 0) {
+        const insideTextContainer = sel && sel.anchorNode && sel.anchorNode.parentElement && sel.anchorNode.parentElement.closest('#text-container');
+
+        if(insideTextContainer && sel && sel.toString().length > 0) {
             selectText(sel.getRangeAt(0), sel.toString());
         }
-        // else {
-        //     e.preventDefault();
-        //     e.stopPropagation();
-        // }
     }
-
     const onClearSelection = e => {
         const el = e.target;
 
@@ -37,16 +40,17 @@ export default ({tags, selectText}) => {
         }
     }
 
-    const highlightText = (selRange) => {
+    const highlightText = (selRange, tagIndex, textIndex) => {
         const safeRanges = getSafeRanges(selRange);
+
         for (let i = 0; i < safeRanges.length; i++) {
-            highlightRange(safeRanges[i], '#81d4fa');
+            highlightRange(safeRanges[i], '#81d4fa', tagIndex, textIndex);
         }
     }
     const highlightAllTexts = (tgs) => {
         tgs.map((tag, i) => {
             tag.texts.map((text, j) => {
-                highlightText(text.range);
+                highlightText(text.range, i, j);
             });
         });
     }
@@ -55,15 +59,40 @@ export default ({tags, selectText}) => {
         callback();
     }
 
-    // Runs only once
+    const onClickHighlight = (e) => {
+        // Do some check on target
+        const target = e.target.classList.contains('highlight') ? e.target : e.target.parentNode.classList.contains('highlight') ? e.target.parentNode : null;
+        if (target) {
+            const tagIndex = parseInt(target.getAttribute('data-tag-index'), 10);
+            const textIndex = parseInt(target.getAttribute('data-text-index'), 10);
+            removeText(tagIndex, textIndex);
+        }
+    }
+
+    // Run whenever update to keep tags updated
     useEffect(() => {
-        textElement.current.addEventListener('mouseup', onSelection);
-        document.addEventListener('mouseup', onClearSelection);
+        textElement.current.addEventListener('click', onClickHighlight, true);
 
         // cleanup
         return () => {
-            textElement.current.removeEventListener('mouseup', onSelection);
+            textElement.current.removeEventListener('click', onClickHighlight, true);
+        }
+    });
+
+    // Runs only once
+    useEffect(() => {
+        // textElement.current.addEventListener('mouseup', onSelection);
+        document.addEventListener('selectionchange', onSelection);
+        document.addEventListener('mouseup', onClearSelection);
+        document.addEventListener('touchend', onClearSelection);
+
+
+        // cleanup
+        return () => {
+            // textElement.current.removeEventListener('mouseup', onSelection);
+            document.removeEventListener('selectionchange', onSelection);
             document.removeEventListener('mouseup', onClearSelection);
+            document.removeEventListener('touchend', onClearSelection);
         }
     }, []);
 
@@ -76,36 +105,10 @@ export default ({tags, selectText}) => {
         setShowModal(false);
     }
 
-    const modalContent = () => {
-        if(tags.length) {
-            return (
-                <React.Fragment>
-                    <Title>Select a Tag</Title>
-                    <List>
-                        {tags.map((tag, index) => {
-                            return (
-                                <ListItem key={index.toString()}>
-                                    {tag.name}
-                                </ListItem>
-                            )
-                        })}
-                    </List>
-                </React.Fragment>
-            )
-        }
-        else {
-            return <Title>Create a tag to tag a text</Title>
-        }
-    }
-
     return (
         <React.Fragment>
-            <Modal show={showModal} closeModal={handleCloseModal}>
-                {modalContent()}
-            </Modal>
-
-            <div ref={textElement} style={{height:'400px', overflow:'auto'}}>
-                <p>Lorem ipsum dolor sit <strong>amet, consectetur adipiscing elit</strong>. Morbi a purus varius, bibendum lorem non, sodales est. Nunc pulvinar bibendum pulvinar. Curabitur aliquam eros a sagittis sagittis. Morbi ipsum augue, mollis id quam et, tempor varius nisl. Cras vestibulum velit in tortor ornare fringilla. Etiam arcu ligula, condimentum et rhoncus in, molestie id dolor. Etiam sagittis augue in ligula interdum, sit amet convallis metus placerat. Nunc egestas nisi nec arcu <strong>faucibus dictum</strong>. Duis porta mattis velit vitae dictum.</p>
+            <TextContainer ref={textElement} id="text-container">
+                <p>Lorem ipsum dolor sit <strong id="test">amet, consectetur adipiscing elit</strong>. Morbi a purus varius, bibendum lorem non, sodales est. Nunc pulvinar bibendum pulvinar. Curabitur aliquam eros a sagittis sagittis. Morbi ipsum augue, mollis id quam et, tempor varius nisl. Cras vestibulum velit in tortor ornare fringilla. Etiam arcu ligula, condimentum et rhoncus in, molestie id dolor. Etiam sagittis augue in ligula interdum, sit amet convallis metus placerat. Nunc egestas nisi nec arcu <strong>faucibus dictum</strong>. Duis porta mattis velit vitae dictum.</p>
 
                 <p>Suspendisse malesuada elementum velit, quis cursus erat lacinia vel. Aenean vel massa in justo aliquam finibus ut vitae arcu. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vivamus in mollis ex, eget tempus felis. Donec non euismod metus, quis faucibus ante. Nullam viverra tempus dolor et egestas. Quisque id accumsan purus. Vestibulum fermentum scelerisque varius. Sed lacinia molestie pellentesque. Duis a tempor tortor, ac ultricies eros. Proin ligula ligula, semper eget laoreet et, ultrices vitae arcu. <strong>Pellentesque luctus ipsum in viverra faucibus. Etiam lobortis tellus nunc, suscipit lacinia sapien sodales eu</strong>. Suspendisse sit amet egestas diam. Mauris in blandit urna, nec tempus turpis. Morbi vestibulum felis vitae tortor maximus euismod.</p>
 
@@ -134,7 +137,7 @@ export default ({tags, selectText}) => {
                 <p>Vivamus sed eros eu nunc efficitur fringilla. Proin nec hendrerit est. Aenean sed metus at magna fermentum accumsan id vitae nunc. Praesent ornare quis metus nec vulputate. Mauris at risus facilisis, vestibulum purus vitae, varius orci. In egestas nisl sed magna viverra vehicula. Aliquam vitae finibus nulla, a vehicula lectus. Nam et massa dolor. Praesent vitae pellentesque lectus. Sed finibus accumsan odio at commodo. Vestibulum nunc sapien, ultricies at mi id, ultricies mollis nulla. Pellentesque mollis justo tellus, a ultricies libero dignissim eu. Etiam lobortis posuere massa nec tempor.</p>
 
                 <p>Maecenas non posuere turpis, vitae rutrum libero. Aenean fringilla et risus non porta. In iaculis enim non ante blandit molestie. Mauris eu nisl a nisi aliquet mollis at et nisl. Suspendisse mattis tempor bibendum. Suspendisse ac pharetra lorem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc turpis eros, commodo vitae suscipit quis, condimentum eu leo. Morbi mollis vehicula porttitor. Nulla vitae congue nulla. Suspendisse vitae aliquam nisl, eget lobortis ligula. Praesent vitae turpis sit amet quam interdum varius in id eros. Nulla tincidunt nulla velit, a mattis ipsum posuere et.</p>
-            </div>
+            </TextContainer>
         </React.Fragment>
     );
 }

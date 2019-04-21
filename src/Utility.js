@@ -8,16 +8,29 @@ export const removeParentTagFromText = (DOMElements) => {
     }
 }
 
-export const highlightRange = (range, bgColor) => {
-    var newNode = document.createElement('div');
+export const highlightRange = (range, bgColor, tagIndex, textIndex) => {
+    const newNode = document.createElement('div');
     newNode.setAttribute(
        'style',
-       `background-color: ${bgColor || '#81d4fa'}; display: inline;`
+       `position: relative; background-color: ${bgColor || '#81d4fa'}; display: inline;`
     );
     newNode.setAttribute(
        'class',
        'highlight'
     );
+    newNode.setAttribute(
+       'title',
+       'Click to remove highlight'
+    );
+    newNode.setAttribute(
+       'data-tag-index',
+       tagIndex
+    );
+    newNode.setAttribute(
+       'data-text-index',
+       textIndex
+    );
+
     range.surroundContents(newNode);
 }
 

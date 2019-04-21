@@ -7,7 +7,6 @@ export default initialValue => {
 
     return {
         tags,
-        textCounter,
         addTag: name => {
             const newTag = {
                 id: tagCounter,

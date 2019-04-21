@@ -10,14 +10,9 @@ export default class App extends React.Component {
 
 	render() {
 		return (
-			<div>
-
-                <Page>
-                    <Tagging />
-                </Page>
-
-
-			</div>
+            <Page>
+                <Tagging />
+            </Page>
 		)
 	}
 }

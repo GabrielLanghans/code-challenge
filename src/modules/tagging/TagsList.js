@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Button from '../../ui-components/forms/Button';
 import List from '../../ui-components/List';
 import ListItem from '../../ui-components/ListItem';
-import {getSafeRanges, highlightRange} from '../../Utility';
 
 const ButtonContainer = styled.div`
     display: inline;
@@ -11,6 +10,11 @@ const ButtonContainer = styled.div`
     pointer-events: none;
     margin-left: 15px;
     transition: opacity 0.3s ease-in-out;
+
+    @media (max-width: 899px) {
+        opacity: 1;
+        pointer-events: auto;
+    }
 `;
 
 const TextCounter = styled.span`
