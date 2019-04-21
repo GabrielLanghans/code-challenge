@@ -29,16 +29,23 @@ const TagsCol = styled.div`
     }
 `;
 
+const SEOTitle = styled.h1`
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+    text-indent: -9999px;
+    position: absolute;
+    width: 0;
+    height: 0;
+`;
+
 export default (props) => {
 
-    const { tags, addTag, removeTag } = tagsState([]);
-
+    const {tags, addTag, removeTag, addText, removeText} = tagsState([]);
 
     const handleAddTag = (tagName, e) => {
-		console.log('adding rag');
-       addTag(tagName);
+        addTag(tagName);
     }
-
     const handleRemoveTag = (index, e) => {
         if(parseInt(index, 10) >= 0) {
             removeTag(index);
@@ -47,15 +54,22 @@ export default (props) => {
 
     return(
         <TaggingContainer>
+            <SEOTitle>Code Challenge</SEOTitle>
             <TextCol>
                 <DefaultBox>
-                    <Text />
+                    <Text tags={tags} />
                 </DefaultBox>
             </TextCol>
             <TagsCol>
                 <DefaultBox>
-                    <AddTag addTag={handleAddTag} />
+                    <AddTag id="add-tag" addTag={handleAddTag} />
                     <TagsList tags={tags} removeTag={handleRemoveTag} />
+
+                    {
+                        //<button id="add-button" type="button" onClick={()=>addText(0, 'first text')}>add text to first tag</button>
+                        //<button type="button" onClick={()=>removeText(0, 1)}>remove second text from the first tag</button>
+                    }
+
                 </DefaultBox>
             </TagsCol>
         </TaggingContainer>

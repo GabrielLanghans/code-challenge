@@ -1,7 +1,8 @@
 import React from 'react';
-import listMarkerSrc from '../../images/list-marker.gif';
 import styled from 'styled-components';
 import Button from '../../ui-components/forms/Button';
+import List from '../../ui-components/List';
+import ListItem from '../../ui-components/ListItem';
 
 const ButtonContainer = styled.div`
     display: inline;
@@ -10,34 +11,7 @@ const ButtonContainer = styled.div`
     margin-left: 15px;
     transition: opacity 0.3s ease-in-out;
 `;
-const List = styled.ul`
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0 17px;
-`;
-const ListItem = styled.li`
-    position: relative;
-    margin: 0;
-    padding: 0 0 0 19px;
-    line-height: 100%;
-    font-size: 12px;
-    &:before {
-        content: "";
-        display: block;
-        position: absolute;
-        left: 0;
-        top: 3px;
-        width: 8px;
-        height: 8px;
-        background: url(${listMarkerSrc});
-    }
-    &:hover {
-        ${ButtonContainer} {
-            opacity: 1;
-            pointer-events: auto;
-        }
-    }
-`;
+
 const TextCounter = styled.span`
     position: relative;
     padding-left: 19px;
@@ -57,6 +31,15 @@ const TextCounter = styled.span`
     }
 `;
 
+const TagListItem = styled(props => <ListItem {...props} />)`
+    &:hover {
+        ${ButtonContainer} {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    }
+`;
+
 export default ({tags, removeTag}) => {
 
     const printCounter = (count) => {
@@ -66,16 +49,16 @@ export default ({tags, removeTag}) => {
     }
 
     return (
-        <List>
+        <List id="tags-list">
             {tags.map((tag, index) => {
                 return (
-                    <ListItem key={index.toString()}>
-                        {tag.name}
+                    <TagListItem key={index.toString()}>
+                        <span className="tag">{tag.name}</span>
                         {printCounter(tag.texts.length)}
                         <ButtonContainer>
-                            <Button type="button" size="small" onClick={(e) => removeTag(index, e)}>Remove {tag.name}</Button>
+                            <Button className="remove-button" type="button" size="small" onClick={(e) => removeTag(index, e)}>Remove {tag.name}</Button>
                         </ButtonContainer>
-                    </ListItem>
+                    </TagListItem>
                 )
             })}
         </List>

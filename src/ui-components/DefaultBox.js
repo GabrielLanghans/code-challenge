@@ -1,8 +1,5 @@
 import styled from 'styled-components';
 
-// min-width: ${props => props.minWidth || 'auto'};
-// width: ${props => props.width || 'auto'};
-
 export default styled.div`
     box-sizing: border-box;
     padding: 25px;

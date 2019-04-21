@@ -11,20 +11,17 @@ const Container = styled.div`
     border-bottom: 1px solid #e3e9ee;
 `;
 
-
-
-
 export default ({addTag}) => {
 
     const [tagName, setTagName] = useState('');
 
     const handleChangeTagName = (e) => {
         setTagName(e.target.value);
-    }    
+    }
 
     return(
         <Container>
-            <TextField value={tagName} type="text" placeholder="Add tag" maxLength="30" inline onChange={handleChangeTagName} />
+            <TextField id="tag-field" value={tagName} type="text" placeholder="Add tag" maxLength="30" inline onChange={handleChangeTagName} />
             <Button type="button" onClick={(e) => addTag(tagName, e)}>+</Button>
         </Container>
     )
