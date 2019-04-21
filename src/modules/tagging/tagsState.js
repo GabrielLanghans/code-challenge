@@ -7,6 +7,7 @@ export default initialValue => {
 
     return {
         tags,
+        textCounter,
         addTag: name => {
             const newTag = {
                 id: tagCounter,
@@ -21,7 +22,7 @@ export default initialValue => {
             // setTags([...tags.slice(0, tagIndex), ...tags.slice(tagIndex + 1)]);
             setTags(tags.filter((item, index) => index !== tagIndex));
         },
-        addText: (tagIndex, text) => {
+        addText: (tagIndex, text, range) => {
             const newTags = tags.map((item, index) => {
                 if(index === tagIndex) {
                     return {
@@ -30,7 +31,8 @@ export default initialValue => {
                             ...item.texts,
                             {
                                 id: textCounter,
-                                text: text
+                                text: text,
+                                range:range
                             }
                         ]
                     }

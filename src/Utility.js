@@ -1,8 +1,22 @@
+export const removeParentTagFromText = (DOMElements) => {
+    while(DOMElements.length) {
+        const parent = DOMElements[0].parentNode;
+        while(DOMElements[0].firstChild) {
+            parent.insertBefore(DOMElements[0].firstChild, DOMElements[0]);
+        }
+         parent.removeChild(DOMElements[0]);
+    }
+}
+
 export const highlightRange = (range, bgColor) => {
-    var newNode = document.createElement("div");
+    var newNode = document.createElement('div');
     newNode.setAttribute(
-       "style",
+       'style',
        `background-color: ${bgColor || '#81d4fa'}; display: inline;`
+    );
+    newNode.setAttribute(
+       'class',
+       'highlight'
     );
     range.surroundContents(newNode);
 }

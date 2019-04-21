@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Button from '../../ui-components/forms/Button';
 import List from '../../ui-components/List';
 import ListItem from '../../ui-components/ListItem';
+import {getSafeRanges, highlightRange} from '../../Utility';
 
 const ButtonContainer = styled.div`
     display: inline;
@@ -32,15 +33,23 @@ const TextCounter = styled.span`
 `;
 
 const TagListItem = styled(props => <ListItem {...props} />)`
+    transition: background-color 0.2s ease-in-out;
+
     &:hover {
         ${ButtonContainer} {
             opacity: 1;
             pointer-events: auto;
         }
+
+        .active & {
+            cursor: pointer;
+            background-color: rgba(197,209,217,.45);
+        }
     }
 `;
 
-export default ({tags, removeTag}) => {
+
+export default ({tags, removeTag, addText, selectedRange, selectedText, emptySelection}) => {
 
     const printCounter = (count) => {
         if(count) {
@@ -48,15 +57,29 @@ export default ({tags, removeTag}) => {
         }
     }
 
+
+    const handleAddTextToTag = (index, selectedText, selectedRange, e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if(selectedText) {
+            addText(index, selectedText, selectedRange);
+            emptySelection();
+        }
+    }
+    const handleRemoveTag = (index, e) => {
+        e.stopPropagation();
+        removeTag(index, e);
+    }
+
     return (
-        <List id="tags-list">
+        <List id="tags-list" className={selectedText ? 'active' : ''}>
             {tags.map((tag, index) => {
                 return (
-                    <TagListItem key={index.toString()}>
+                    <TagListItem className="tag-list-item" key={index.toString()} onClick={(e) => handleAddTextToTag(index, selectedText, selectedRange, e)}>
                         <span className="tag">{tag.name}</span>
                         {printCounter(tag.texts.length)}
                         <ButtonContainer>
-                            <Button className="remove-button" type="button" size="small" onClick={(e) => removeTag(index, e)}>Remove {tag.name}</Button>
+                            <Button className="remove-button" type="button" size="small" onClick={(e) => handleRemoveTag(index, e)}>Remove {tag.name}</Button>
                         </ButtonContainer>
                     </TagListItem>
                 )

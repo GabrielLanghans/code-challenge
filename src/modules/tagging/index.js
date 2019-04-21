@@ -42,6 +42,8 @@ const SEOTitle = styled.h1`
 export default (props) => {
 
     const {tags, addTag, removeTag, addText, removeText} = tagsState([]);
+    const [selectedRange, setSelectedRange] = useState(null);
+    const [selectedText, setSelectedText] = useState(null);
 
     const handleAddTag = (tagName, e) => {
         addTag(tagName);
@@ -51,19 +53,23 @@ export default (props) => {
             removeTag(index);
         }
     }
+    const handleSelectText = (selectedRange, text) => {
+        setSelectedRange(selectedRange);
+        setSelectedText(text);
+    }
 
     return(
         <TaggingContainer>
             <SEOTitle>Code Challenge</SEOTitle>
             <TextCol>
                 <DefaultBox>
-                    <Text tags={tags} />
+                    <Text tags={tags} selectText={(range, text) => handleSelectText(range, text)} />
                 </DefaultBox>
             </TextCol>
             <TagsCol>
                 <DefaultBox>
                     <AddTag id="add-tag" addTag={handleAddTag} />
-                    <TagsList tags={tags} removeTag={handleRemoveTag} />
+                    <TagsList tags={tags} removeTag={handleRemoveTag} addText={addText} selectedRange={selectedRange} selectedText={selectedText} emptySelection={() => handleSelectText(null, '')} />
 
                     {
                         //<button id="add-button" type="button" onClick={()=>addText(0, 'first text')}>add text to first tag</button>

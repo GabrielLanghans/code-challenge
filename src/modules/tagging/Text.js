@@ -3,30 +3,74 @@ import Modal from '../../ui-components/Modal';
 import List from '../../ui-components/List';
 import ListItem from '../../ui-components/ListItem';
 import Title from '../../ui-components/Title';
-import {highlightRange, getSafeRanges} from '../../Utility';
+import {removeParentTagFromText, highlightRange, getSafeRanges} from '../../Utility';
 
 
-export default ({tags}) => {
+export default ({tags, selectText}) => {
 
     const [showModal, setShowModal] = useState(false);
 
+
     const textElement = useRef(null);
 
-    useEffect(() => {
-        textElement.current.addEventListener('mouseup', function(e){
-            const selection = window.getSelection();
-            if(selection && selection.toString().length > 0) {
-                const userSelection = window.getSelection().getRangeAt(0);
-                const safeRanges = getSafeRanges(userSelection);
-                for (let i = 0; i < safeRanges.length; i++) {
-                    highlightRange(safeRanges[i], '#81d4fa');
-                }
-                // setShowModal(true);
+    const onSelection = e => {
+        const sel = window.getSelection();
+        if(sel && sel.toString().length > 0) {
+            selectText(sel.getRangeAt(0), sel.toString());
+        }
+        // else {
+        //     e.preventDefault();
+        //     e.stopPropagation();
+        // }
+    }
 
-                console.log('selection.toString()', selection.toString());
-            }
+    const onClearSelection = e => {
+        const el = e.target;
+
+        if(el.classList.contains('tag-list-item') || el.closest('li') && el.closest('li').classList.contains('tag-list-item')) {
+            return;
+        }
+
+        const sel = window.getSelection();
+        if(!sel || !sel.toString()) {
+            selectText(null, '');
+        }
+    }
+
+    const highlightText = (selRange) => {
+        const safeRanges = getSafeRanges(selRange);
+        for (let i = 0; i < safeRanges.length; i++) {
+            highlightRange(safeRanges[i], '#81d4fa');
+        }
+    }
+    const highlightAllTexts = (tgs) => {
+        tgs.map((tag, i) => {
+            tag.texts.map((text, j) => {
+                highlightText(text.range);
+            });
         });
+    }
+    const clearHighligts = (highlightElements, callback) => {
+        removeParentTagFromText(highlightElements);
+        callback();
+    }
+
+    // Runs only once
+    useEffect(() => {
+        textElement.current.addEventListener('mouseup', onSelection);
+        document.addEventListener('mouseup', onClearSelection);
+
+        // cleanup
+        return () => {
+            textElement.current.removeEventListener('mouseup', onSelection);
+            document.removeEventListener('mouseup', onClearSelection);
+        }
     }, []);
+
+    // Runs every time tags changed
+    useEffect(() => {
+        clearHighligts(document.getElementsByClassName('highlight'), () => highlightAllTexts(tags));
+    }, [tags]);
 
     const handleCloseModal = () => {
         setShowModal(false);
@@ -61,9 +105,9 @@ export default ({tags}) => {
             </Modal>
 
             <div ref={textElement} style={{height:'400px', overflow:'auto'}}>
-                <p>Lorem ipsum dolor sit <strong>amet, consectetur adipiscing elit</strong>. Morbi a purus varius, bibendum lorem non, sodales est. Nunc pulvinar bibendum pulvinar. Curabitur aliquam eros a sagittis sagittis. Morbi ipsum augue, mollis id quam et, tempor varius nisl. Cras vestibulum velit in tortor ornare fringilla. Etiam arcu ligula, condimentum et rhoncus in, molestie id dolor. Etiam sagittis augue in ligula interdum, sit amet convallis metus placerat. Nunc egestas nisi nec arcu faucibus dictum. Duis porta mattis velit vitae dictum.</p>
+                <p>Lorem ipsum dolor sit <strong>amet, consectetur adipiscing elit</strong>. Morbi a purus varius, bibendum lorem non, sodales est. Nunc pulvinar bibendum pulvinar. Curabitur aliquam eros a sagittis sagittis. Morbi ipsum augue, mollis id quam et, tempor varius nisl. Cras vestibulum velit in tortor ornare fringilla. Etiam arcu ligula, condimentum et rhoncus in, molestie id dolor. Etiam sagittis augue in ligula interdum, sit amet convallis metus placerat. Nunc egestas nisi nec arcu <strong>faucibus dictum</strong>. Duis porta mattis velit vitae dictum.</p>
 
-                <p>Suspendisse malesuada elementum velit, quis cursus erat lacinia vel. Aenean vel massa in justo aliquam finibus ut vitae arcu. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vivamus in mollis ex, eget tempus felis. Donec non euismod metus, quis faucibus ante. Nullam viverra tempus dolor et egestas. Quisque id accumsan purus. Vestibulum fermentum scelerisque varius. Sed lacinia molestie pellentesque. Duis a tempor tortor, ac ultricies eros. Proin ligula ligula, semper eget laoreet et, ultrices vitae arcu. Pellentesque luctus ipsum in viverra faucibus. Etiam lobortis tellus nunc, suscipit lacinia sapien sodales eu. Suspendisse sit amet egestas diam. Mauris in blandit urna, nec tempus turpis. Morbi vestibulum felis vitae tortor maximus euismod.</p>
+                <p>Suspendisse malesuada elementum velit, quis cursus erat lacinia vel. Aenean vel massa in justo aliquam finibus ut vitae arcu. Interdum et malesuada fames ac ante ipsum primis in faucibus. Vivamus in mollis ex, eget tempus felis. Donec non euismod metus, quis faucibus ante. Nullam viverra tempus dolor et egestas. Quisque id accumsan purus. Vestibulum fermentum scelerisque varius. Sed lacinia molestie pellentesque. Duis a tempor tortor, ac ultricies eros. Proin ligula ligula, semper eget laoreet et, ultrices vitae arcu. <strong>Pellentesque luctus ipsum in viverra faucibus. Etiam lobortis tellus nunc, suscipit lacinia sapien sodales eu</strong>. Suspendisse sit amet egestas diam. Mauris in blandit urna, nec tempus turpis. Morbi vestibulum felis vitae tortor maximus euismod.</p>
 
                 <p>Praesent congue <strong>placerat mollis. Morbi non fringilla lacus. Nullam dignissim vel eros eu efficitur. Cras ornare lectus et quam tristique vehicula. Nulla laoreet finibus bibendum. Pellentesque tempus velit feugiat, imperdiet tortor vel, consequat sem. Duis nunc dui, rutrum ut nisi sit amet, lacinia facilisis magna. Vivamus dignissim ultricies mollis. Donec luctus, tortor ut varius aliquet, ex orci finibus est, vel sagittis neque felis sit amet eros. Aenean pulvinar urna eros</strong>, eget imperdiet ligula auctor in. Proin sit amet nunc risus. Nunc non lectus lacinia orci hendrerit finibus at aliquet risus. Vivamus a dictum mi. Quisque tincidunt mi vestibulum ipsum hendrerit, sed maximus sem semper.</p>
 
